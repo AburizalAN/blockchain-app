@@ -3,6 +3,10 @@
 import { AiFillPlayCircle } from "react-icons/ai";
 import { SiEthereum } from "react-icons/si";
 import { BsInfoCircle } from "react-icons/bs";
+import { withTransactionContext, TransactionContext } from "@/src/context/TransactionContext";
+import dynamic from "next/dynamic";
+
+import { useContext } from "react";
 
 const Input = ({ placeholder, name, type, handleChange, value }) => (
   <input
@@ -16,8 +20,29 @@ const Input = ({ placeholder, name, type, handleChange, value }) => (
 );
 
 const Home = () => {
-  const connectWallet = () => {};
-  const handleSubmit = () => {};
+  const { connectWallet, currentAccount, formData, setFormData, handleChange, sendTransaction } =
+    useContext(TransactionContext);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const { addressTo, amount, keyword, message } = formData;
+
+    if (isEmptyValue(addressTo) || isEmptyValue(amount) || isEmptyValue(keyword) || isEmptyValue(message)) return;
+
+    sendTransaction();
+  };
+
+  const isEmptyValue = (value) => {
+    if (
+      value === null ||
+      value === undefined ||
+      (typeof value === "string" && value.trim().length === 0)
+    ) {
+      return true;
+    }
+    return false;
+  };
+
   return (
     <main className="gradient-bg-welcome">
       <div className="flex flex-row mx-auto max-w-7xl py-24 px-2 sm:px-6 lg:px-8">
@@ -29,12 +54,14 @@ const Home = () => {
             Explore the crypto world. Buy and sell cryptocurrency easily on
             KRIPTO
           </p>
-          <button
-            className="flex flex-row justify-center items-center rounded-full p-2.5 my-5 bg-blue-500 hover:bg-blue-600 w-100 transition-all"
-            onClick={connectWallet}
-          >
-            Connect Wallet
-          </button>
+          {!currentAccount ? (
+            <button
+              className="flex flex-row justify-center items-center rounded-full p-2.5 my-5 bg-blue-500 hover:bg-blue-600 w-100 transition-all"
+              onClick={connectWallet}
+            >
+              Connect Wallet
+            </button>
+          ) : null}
         </div>
         <div className="flex flex-col flex-1 items-center justify-start w-full">
           <div className="flex flex-col p-3 items-start rounded-xl h-40 w-full md:w-72 eth-card white-glassmorphism">
@@ -52,10 +79,10 @@ const Home = () => {
             </p>
           </div>
           <div className="sm:w-96 w-full mt-5 p-5 flex flex-col justify-start items-center blue-glassmorphism">
-            <Input placeholder="Address To" name="addressTo" type="text" handleChange={() => {}} />
-            <Input placeholder="Amount (ETH)" name="amount" type="number" handleChange={() => {}} />
-            <Input placeholder="Keyword (Gif)" name="keyword" type="text" handleChange={() => {}} />
-            <Input placeholder="Enter Message" name="message" type="text" handleChange={() => {}} />
+            <Input placeholder="Address To" name="addressTo" type="text" handleChange={handleChange} />
+            <Input placeholder="Amount (ETH)" name="amount" type="number" handleChange={handleChange} />
+            <Input placeholder="Keyword (Gif)" name="keyword" type="text" handleChange={handleChange} />
+            <Input placeholder="Enter Message" name="message" type="text" handleChange={handleChange} />
             <div className="h-[1px] w-full bg-gray-700 mt-2"></div>
             <button
               type="submit"
@@ -71,4 +98,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default withTransactionContext(Home);
