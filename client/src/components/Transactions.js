@@ -27,8 +27,6 @@ const TransactionsCard = ({ addressTo, addressFrom, timestamp, message, keyword,
 
   return (
     <div className="bg-[#181918] flex flex-1
-      2xl:min-w-[450px]
-      2xl:max-w-[500px]
       sm:min-w-[270px]
       sm:max-w-[300px]
       min-w-full
