@@ -67,13 +67,13 @@ export const withTransactionContext = (Component) => (props) => {
         getAllTransactions();
       } else {
         console.log("No accounts found");
+        alert("No Account found");
       }
       console.log(accounts);
     } catch (err) {
       console.log(err)
       throw new Error("No ethereum object.");
     }
-    
   }
 
   const checkIfTransactionExist = async () => {
